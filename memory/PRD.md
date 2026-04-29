@@ -28,6 +28,13 @@ Design and develop a low-cost, community-driven platform named Nidhii that enabl
 - ✅ Admin verify queue (pending/verified/rejected/all tabs, Verify/Reject actions, CSV exports)
 - ✅ 24/24 backend tests pass; frontend verified end-to-end (signup→dashboard, admin verify, IVR dial, chat en+hi)
 
+## Iteration 2 (29 Apr 2026 — same day)
+- ✅ **Real Twilio Voice IVR** — `/api/twilio/voice|gather|recording-done|recording-status` webhooks return valid TwiML (multilingual EN/HI based on `FromCountry`); Whisper transcribes recording then auto-creates a report. Stub mode active until `TWILIO_*` env vars filled.
+- ✅ **Google Sheets two-way sync** — service-account based. On every report create/verify and user signup, rows are upserted in `Reports` and `Users` tabs of the configured spreadsheet. Admin can manually `Push all` or `Pull edits` (read manual status changes from the sheet back into Mongo). Stub mode until `GOOGLE_SHEETS_CREDS_JSON` and `GOOGLE_SHEETS_SPREADSHEET_ID` are set.
+- ✅ **Area-based supervisor routing** — every report stores `area` from the resident. Supervisors only see reports matching their own `area` (case-insensitive); admins see all. Admin UI shows an Area filter chip when logged in as supervisor.
+- ✅ **Integrations admin panel** — `/admin` page now has live status cards for Twilio + Sheets with stub/live indicators and the exact `.env` keys needed.
+- ✅ 36/36 backend tests pass; frontend verified.
+
 ## Prioritized backlog
 **P0 (next session)**
 - Real Twilio integration for actual phone calls + DTMF
