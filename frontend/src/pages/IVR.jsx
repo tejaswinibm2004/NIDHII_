@@ -70,12 +70,9 @@ export default function IVR() {
     }, 900);
   };
 
-  const speak = (text) => {
+  const speak = async (text) => {
     const langMap = { en: "en-IN", hi: "hi-IN", ta: "ta-IN", te: "te-IN", bn: "bn-IN", mr: "mr-IN", kn: "kn-IN" };
-    const r = speakText(text, langMap[language] || "en-IN");
-    if (r.fallback) {
-      toast.message(`No ${language.toUpperCase()} voice on this device — using ${r.voiceLang}`, { duration: 2200 });
-    }
+    await speakText(text, langMap[language] || "en-IN");
   };
 
   const press = async (digit) => {
@@ -168,7 +165,7 @@ export default function IVR() {
           </div>
           {!hasVoiceFor(language) && language !== "en" && (
             <p className="text-[11px] uppercase tracking-widest text-white/60 font-bold mb-3" data-testid="ivr-voice-note">
-              No {language.toUpperCase()} voice on this browser · prompts will use Hindi/English fallback
+              {language.toUpperCase()} voice via cloud TTS · slight delay first time
             </p>
           )}
 

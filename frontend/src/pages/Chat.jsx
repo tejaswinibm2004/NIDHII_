@@ -54,14 +54,10 @@ export default function Chat() {
     } finally { setBusy(false); }
   };
 
-  const speak = (txt) => {
+  const speak = async (txt) => {
     const langMap = { en: "en-IN", hi: "hi-IN", ta: "ta-IN", te: "te-IN", bn: "bn-IN", mr: "mr-IN", kn: "kn-IN" };
-    const result = speakText(txt, langMap[language] || "en-IN");
-    if (result.fallback) {
-      toast.message(`No ${language.toUpperCase()} voice on this device — using ${result.voiceLang}`, { duration: 2500 });
-    } else if (!result.ok) {
-      toast.error("Speech not available on this device");
-    }
+    const result = await speakText(txt, langMap[language] || "en-IN");
+    if (!result.ok) toast.error("Speech not available");
   };
 
   const startRec = async () => {
@@ -105,7 +101,7 @@ export default function Chat() {
           </select>
           {!hasVoiceFor(language) && language !== "en" && (
             <span className="text-[10px] uppercase tracking-widest font-bold text-slate-500" data-testid="voice-unavailable-note">
-              Text in {language.toUpperCase()} · voice will use Hindi/English
+              Voice in {language.toUpperCase()} via cloud TTS
             </span>
           )}
         </div>

@@ -104,6 +104,12 @@ class ChatIn(BaseModel):
     language: str = "en"
     session_id: Optional[str] = None
 
+
+class TTSIn(BaseModel):
+    text: str
+    language: str = "en"
+    voice: str = "nova"
+
 class IVRStepIn(BaseModel):
     digit: str
     session_id: Optional[str] = None
@@ -372,6 +378,34 @@ async def chat(body: ChatIn, user=Depends(current_user)):
         "created_at": now_iso(),
     })
     return {"reply": str(resp), "session_id": sid}
+
+# ---------- TTS (server-side voice for languages browsers can't speak) ----------
+@api.post("/tts")
+async def tts(body: TTSIn, user=Depends(current_user)):
+    """Return MP3 bytes for the given text. Used when the browser has no
+    SpeechSynthesis voice for the user's language (e.g. Kannada on desktop Chrome)."""
+    try:
+        from emergentintegrations.llm.openai import OpenAITextToSpeech
+    except Exception as e:
+        raise HTTPException(500, f"TTS unavailable: {e}")
+    text = (body.text or "").strip()
+    if not text:
+        raise HTTPException(400, "Empty text")
+    if len(text) > 4000:
+        text = text[:4000]
+    tts_client = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
+    try:
+        audio = await tts_client.generate_speech(
+            text=text,
+            model="tts-1",
+            voice=body.voice or "nova",
+            response_format="mp3",
+        )
+    except Exception as e:
+        logger.exception("tts failed")
+        raise HTTPException(500, f"TTS failed: {e}")
+    return Response(content=audio, media_type="audio/mpeg")
+
 
 # ---------- IVR simulator ----------
 IVR_TREE = {
