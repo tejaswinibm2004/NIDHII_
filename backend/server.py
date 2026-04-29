@@ -336,6 +336,7 @@ async def chat(body: ChatIn, user=Depends(current_user)):
     lang_map = {
         "en": "English", "hi": "Hindi", "ta": "Tamil",
         "te": "Telugu", "bn": "Bengali", "mr": "Marathi",
+        "kn": "Kannada",
     }
     lang_name = lang_map.get(body.language, "English")
     system = (

@@ -59,68 +59,85 @@ h1, h2, h3, h4, .heading {
 }
 
 /* Civic poster components */
-.civic-card {
-  background: #fff;
-  border: 2px solid var(--nidhii-border);
-  border-radius: 0.75rem;
-  box-shadow: 4px 4px 0 0 var(--nidhii-border);
-}
+@layer components {
+  .civic-card {
+    background: #fff;
+    border: 2px solid var(--nidhii-border);
+    border-radius: 0.75rem;
+    box-shadow: 4px 4px 0 0 var(--nidhii-border);
+  }
 
-.civic-btn {
-  background: var(--nidhii-primary);
-  color: #fff;
-  border: 2px solid var(--nidhii-border);
-  border-radius: 0.75rem;
-  box-shadow: 4px 4px 0 0 var(--nidhii-border);
-  font-weight: 800;
-  padding: 0.85rem 1.5rem;
-  transition: transform 80ms ease, box-shadow 80ms ease, background 120ms ease;
-  cursor: pointer;
-  font-family: 'Outfit', sans-serif;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-.civic-btn:hover { background: var(--nidhii-primary-hover); }
-.civic-btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 0 var(--nidhii-border); }
+  .civic-btn {
+    background: var(--nidhii-primary);
+    color: #fff;
+    border: 2px solid var(--nidhii-border);
+    border-radius: 0.75rem;
+    box-shadow: 4px 4px 0 0 var(--nidhii-border);
+    font-weight: 800;
+    padding: 0.85rem 1.5rem;
+    transition: transform 80ms ease, box-shadow 80ms ease, background 120ms ease;
+    cursor: pointer;
+    font-family: 'Outfit', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .civic-btn:hover { background: var(--nidhii-primary-hover); }
+  .civic-btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 0 var(--nidhii-border); }
 
-.civic-btn-secondary { background: var(--nidhii-secondary); }
-.civic-btn-secondary:hover { background: var(--nidhii-secondary-hover); }
+  .civic-btn-secondary { background: var(--nidhii-secondary); }
+  .civic-btn-secondary:hover { background: var(--nidhii-secondary-hover); }
 
-.civic-btn-accent { background: var(--nidhii-accent); color: var(--nidhii-text); }
-.civic-btn-accent:hover { background: #e29819; }
+  .civic-btn-accent { background: var(--nidhii-accent); color: var(--nidhii-text); }
+  .civic-btn-accent:hover { background: #e29819; }
 
-.civic-btn-ghost {
-  background: #fff;
-  color: var(--nidhii-text);
-}
-.civic-btn-ghost:hover { background: #f6f1e7; }
+  .civic-btn-ghost {
+    background: #fff;
+    color: var(--nidhii-text);
+  }
+  .civic-btn-ghost:hover { background: #f6f1e7; }
 
-.civic-input {
-  border: 2px solid var(--nidhii-border) !important;
-  border-radius: 0.5rem !important;
-  background: #fff;
-  height: 3.25rem;
-  font-size: 1rem;
-  padding: 0 1rem;
-  width: 100%;
-  font-family: 'Manrope', sans-serif;
-}
-.civic-input:focus { outline: 2px solid var(--nidhii-primary); outline-offset: 2px; }
+  .civic-input {
+    border: 2px solid var(--nidhii-border) !important;
+    border-radius: 0.5rem !important;
+    background: #fff;
+    height: 3.25rem;
+    font-size: 1rem;
+    padding: 0 1rem;
+    width: 100%;
+    font-family: 'Manrope', sans-serif;
+  }
+  .civic-input:focus { outline: 2px solid var(--nidhii-primary); outline-offset: 2px; }
 
-.civic-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  border: 2px solid var(--nidhii-border);
-  font-weight: 700;
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  background: #fff;
+  .civic-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 2px solid var(--nidhii-border);
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: #fff;
+  }
+
+  .dial-key {
+    border: 2px solid var(--nidhii-border);
+    background: #fff;
+    border-radius: 0.85rem;
+    box-shadow: 3px 3px 0 0 var(--nidhii-border);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.6rem;
+    padding: 0.85rem 0;
+    cursor: pointer;
+    transition: transform 60ms;
+  }
+  .dial-key:hover { background: #fff5ec; }
+  .dial-key:active { transform: translate(3px, 3px); box-shadow: 0 0 0 0 var(--nidhii-border); }
 }
 
 .dot-bg {
@@ -137,22 +154,6 @@ h1, h2, h3, h4, .heading {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='2' /%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.18 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity: 0.35; pointer-events: none; mix-blend-mode: multiply;
 }
-
-/* dial pad */
-.dial-key {
-  border: 2px solid var(--nidhii-border);
-  background: #fff;
-  border-radius: 0.85rem;
-  box-shadow: 3px 3px 0 0 var(--nidhii-border);
-  font-family: 'Outfit', sans-serif;
-  font-weight: 800;
-  font-size: 1.6rem;
-  padding: 0.85rem 0;
-  cursor: pointer;
-  transition: transform 60ms;
-}
-.dial-key:hover { background: #fff5ec; }
-.dial-key:active { transform: translate(3px, 3px); box-shadow: 0 0 0 0 var(--nidhii-border); }
 
 @layer base {
   * { @apply border-border; }

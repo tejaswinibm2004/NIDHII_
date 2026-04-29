@@ -10,6 +10,7 @@ const LANGS = [
   { code: "te", label: "తెలుగు" },
   { code: "bn", label: "বাংলা" },
   { code: "mr", label: "मराठी" },
+  { code: "kn", label: "ಕನ್ನಡ" },
 ];
 
 const SUGGESTIONS = {
@@ -19,6 +20,7 @@ const SUGGESTIONS = {
   te: ["నీటి లీక్ ఎలా రిపోర్ట్ చేయాలి?", "₹10 ఎలా సంపాదించాలి?", "నా రివార్డ్ ఎక్కడ?"],
   bn: ["জল লিকেজ কীভাবে রিপোর্ট করব?", "₹10 কীভাবে পাব?", "আমার পুরস্কার কোথায়?"],
   mr: ["गळतीची तक्रार कशी करायची?", "₹10 कसे मिळतील?", "माझे बक्षीस कुठे आहे?"],
+  kn: ["ನೀರಿನ ಸೋರಿಕೆಯನ್ನು ಹೇಗೆ ವರದಿ ಮಾಡುವುದು?", "₹10 ಹೇಗೆ ಸಂಪಾದಿಸುವುದು?", "ನನ್ನ ಬಹುಮಾನ ಎಲ್ಲಿ?"],
 };
 
 export default function Chat() {
@@ -54,7 +56,7 @@ export default function Chat() {
   const speak = (txt) => {
     try {
       const u = new SpeechSynthesisUtterance(txt);
-      const langMap = { en: "en-IN", hi: "hi-IN", ta: "ta-IN", te: "te-IN", bn: "bn-IN", mr: "mr-IN" };
+      const langMap = { en: "en-IN", hi: "hi-IN", ta: "ta-IN", te: "te-IN", bn: "bn-IN", mr: "mr-IN", kn: "kn-IN" };
       u.lang = langMap[language] || "en-IN";
       u.rate = 0.9;
       window.speechSynthesis.cancel();

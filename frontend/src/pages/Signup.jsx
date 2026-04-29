@@ -11,6 +11,7 @@ const LANGS = [
   { code: "te", label: "తెలుగు (Telugu)" },
   { code: "bn", label: "বাংলা (Bengali)" },
   { code: "mr", label: "मराठी (Marathi)" },
+  { code: "kn", label: "ಕನ್ನಡ (Kannada)" },
 ];
 
 export default function Signup() {

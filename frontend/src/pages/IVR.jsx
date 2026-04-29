@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import api from "../lib/api";
-import { Phone, PhoneCall, Mic, MicOff, ArrowLeft, Volume2 } from "lucide-react";
+import { Phone, PhoneCall, Mic, MicOff, ArrowLeft, Volume2, Delete } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
@@ -21,8 +21,34 @@ export default function IVR() {
   const VIRTUAL_NUMBER = "1800643444";
 
   const dial = (d) => {
-    if (number.length < 10) setNumber(number + d);
+    if (number.length < 10) setNumber((n) => n + d);
   };
+
+  const undo = () => setNumber((n) => n.slice(0, -1));
+  const clearAll = () => setNumber("");
+
+  // Keyboard support — listen on the page for digits/backspace/Enter while idle or connected
+  useEffect(() => {
+    const handler = (e) => {
+      // ignore when user is typing into an input/select/textarea
+      const tag = (e.target?.tagName || "").toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
+      const k = e.key;
+      if (stage === "idle") {
+        if (/^[0-9]$/.test(k)) { e.preventDefault(); dial(k); }
+        else if (k === "Backspace") { e.preventDefault(); undo(); }
+        else if (k === "Delete") { e.preventDefault(); clearAll(); }
+        else if (k === "Enter") { e.preventDefault(); call(); }
+        else if (k === "*" || k === "#") { e.preventDefault(); dial(k); }
+      } else if (stage === "connected") {
+        if (/^[0-9*#]$/.test(k)) { e.preventDefault(); press(k); }
+        else if (k === "Escape") { e.preventDefault(); hangup(); }
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stage, number, session]);
 
   const call = async () => {
     if (number !== VIRTUAL_NUMBER) {
@@ -138,6 +164,7 @@ export default function IVR() {
               <option value="te">తెలుగు</option>
               <option value="bn">বাংলা</option>
               <option value="mr">मराठी</option>
+              <option value="kn">ಕನ್ನಡ</option>
             </select>
           </div>
 
@@ -147,7 +174,7 @@ export default function IVR() {
             </span>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="grid grid-cols-3 gap-2 mb-3">
             {["1","2","3","4","5","6","7","8","9","*","0","#"].map(d => (
               <button key={d}
                 data-testid={`dial-${d}`}
@@ -157,6 +184,33 @@ export default function IVR() {
               </button>
             ))}
           </div>
+
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <button
+              type="button"
+              onClick={undo}
+              disabled={stage !== "idle" || number.length === 0}
+              className="dial-key text-slate-900 !text-base flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+              data-testid="dial-undo"
+              title="Backspace"
+            >
+              <Delete className="w-5 h-5" strokeWidth={2.5}/> Undo
+            </button>
+            <button
+              type="button"
+              onClick={clearAll}
+              disabled={stage !== "idle" || number.length === 0}
+              className="dial-key text-slate-900 !text-base disabled:opacity-40 disabled:cursor-not-allowed"
+              data-testid="dial-clear"
+              title="Delete"
+            >
+              Clear
+            </button>
+          </div>
+
+          <p className="text-[11px] uppercase tracking-widest text-white/60 font-bold mb-3 text-center" data-testid="keyboard-hint">
+            Tip: use your keyboard — digits, Backspace, Enter, Esc
+          </p>
 
           <div className="grid grid-cols-2 gap-2">
             {stage === "idle" || stage === "dialing" ? (
