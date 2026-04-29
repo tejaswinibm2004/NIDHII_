@@ -28,6 +28,10 @@ const FALLBACK_CHAIN = {
   en: ["en-IN", "en-US", "en-GB", "en"],
 };
 
+// Languages where browser SpeechSynthesis voices are unreliable (often missing
+// or wrong-language fallback). Always go to server-side TTS for these.
+const ALWAYS_CLOUD = new Set(["kn", "ta", "te", "bn", "mr"]);
+
 function pickVoice(language) {
   const voices = loadVoices();
   if (!voices.length) return null;
@@ -43,6 +47,9 @@ function pickVoice(language) {
 
 /** Returns true if browser has a voice for this language base. */
 export function hasVoiceFor(language) {
+  const base = (language || "en").split("-")[0].toLowerCase();
+  // For Indic languages we always use cloud TTS — pretend no local voice.
+  if (ALWAYS_CLOUD.has(base)) return false;
   return !!pickVoice(language);
 }
 
@@ -74,7 +81,8 @@ export async function speakText(text, language = "en") {
   stopAll();
 
   const base = (language || "en").split("-")[0].toLowerCase();
-  const localVoice = pickVoice(language);
+  // For Indic languages, always use cloud TTS — browser voices are unreliable.
+  const localVoice = ALWAYS_CLOUD.has(base) ? null : pickVoice(language);
 
   if (localVoice) {
     try {
