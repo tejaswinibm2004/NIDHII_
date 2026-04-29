@@ -1,23 +1,25 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../lib/auth";
-import { LogOut, LayoutDashboard, Phone, FileText, Trophy, Gift, MessageCircle, ShieldCheck, Menu } from "lucide-react";
+import { useI18n, LANGUAGES } from "../lib/i18n";
+import { LogOut, LayoutDashboard, Phone, FileText, Trophy, Gift, MessageCircle, ShieldCheck, Menu, Globe } from "lucide-react";
 import { useState } from "react";
 
 export default function Header() {
   const { user, signOut } = useAuth();
+  const { t, lang, setLanguage } = useI18n();
   const nav = useNavigate();
   const [open, setOpen] = useState(false);
 
   const links = [
-    { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, testid: "nav-dashboard" },
-    { to: "/ivr", label: "Phone Line", icon: Phone, testid: "nav-ivr" },
-    { to: "/reports", label: "Reports", icon: FileText, testid: "nav-reports" },
-    { to: "/leaderboard", label: "Leaderboard", icon: Trophy, testid: "nav-leaderboard" },
-    { to: "/rewards", label: "Rewards", icon: Gift, testid: "nav-rewards" },
-    { to: "/chat", label: "Sahayak", icon: MessageCircle, testid: "nav-chat" },
+    { to: "/dashboard", label: t("nav_dashboard"), icon: LayoutDashboard, testid: "nav-dashboard" },
+    { to: "/ivr", label: t("nav_phone"), icon: Phone, testid: "nav-ivr" },
+    { to: "/reports", label: t("nav_reports"), icon: FileText, testid: "nav-reports" },
+    { to: "/leaderboard", label: t("nav_leaderboard"), icon: Trophy, testid: "nav-leaderboard" },
+    { to: "/rewards", label: t("nav_rewards"), icon: Gift, testid: "nav-rewards" },
+    { to: "/chat", label: t("nav_sahayak"), icon: MessageCircle, testid: "nav-chat" },
   ];
   if (user?.role === "admin" || user?.role === "supervisor") {
-    links.push({ to: "/admin", label: "Admin", icon: ShieldCheck, testid: "nav-admin" });
+    links.push({ to: "/admin", label: t("nav_admin"), icon: ShieldCheck, testid: "nav-admin" });
   }
 
   return (
@@ -27,7 +29,7 @@ export default function Header() {
           <div className="w-10 h-10 rounded-lg bg-[#E05A3D] border-2 border-slate-900 flex items-center justify-center text-white font-black text-xl shadow-[3px_3px_0_0_#0F172A] heading">N</div>
           <div>
             <div className="heading text-2xl font-black leading-none">Nidhii</div>
-            <div className="text-[10px] tracking-[0.18em] uppercase text-slate-600 font-bold">Community Watch</div>
+            <div className="text-[10px] tracking-[0.18em] uppercase text-slate-600 font-bold">{t("brand_tagline")}</div>
           </div>
         </Link>
 
@@ -47,6 +49,19 @@ export default function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <div className="relative flex items-center gap-1 border-2 border-slate-900 rounded-lg px-2 py-1 bg-white" data-testid="lang-switcher">
+            <Globe className="w-4 h-4" strokeWidth={2.5}/>
+            <select
+              value={lang}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="bg-transparent font-bold text-sm focus:outline-none cursor-pointer pr-1"
+              data-testid="lang-select"
+            >
+              {LANGUAGES.map((l) => (
+                <option key={l.code} value={l.code}>{l.label}</option>
+              ))}
+            </select>
+          </div>
           {user && (
             <>
               <div className="hidden sm:flex flex-col items-end leading-tight">
@@ -57,6 +72,7 @@ export default function Header() {
                 onClick={() => { signOut(); nav("/"); }}
                 className="civic-btn civic-btn-ghost !py-2 !px-3"
                 data-testid="logout-button"
+                title={t("logout")}
               >
                 <LogOut className="w-4 h-4" strokeWidth={2.5} />
               </button>

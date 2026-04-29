@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import api from "../lib/api";
 import { useAuth } from "../lib/auth";
+import { useI18n } from "../lib/i18n";
 import { Link } from "react-router-dom";
 import { Droplets, Zap, Trash2, Trophy, Gift, Phone, Plus, IndianRupee } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Legend } from "recharts";
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { t } = useI18n();
   const [stats, setStats] = useState(null);
   const [weekly, setWeekly] = useState([]);
   const [leaders, setLeaders] = useState([]);
@@ -22,12 +24,14 @@ export default function Dashboard() {
   }, []);
 
   const myRank = leaders.findIndex(l => l.id === user?.id);
+  const points = user?.points || 0;
+  const toNext = 25 - (points % 25);
 
   const cards = [
-    { label: "Total reports", value: stats?.total_reports ?? "—", icon: Plus, color: "#E05A3D" },
-    { label: "Verified", value: stats?.verified ?? "—", icon: Trophy, color: "#246356" },
-    { label: "Active guardians", value: stats?.active_users ?? "—", icon: Phone, color: "#F5A623" },
-    { label: "₹ rewarded", value: `₹${stats?.rupees_distributed ?? 0}`, icon: IndianRupee, color: "#0F172A" },
+    { label: t("stat_total"), value: stats?.total_reports ?? "—", icon: Plus, color: "#E05A3D" },
+    { label: t("stat_verified"), value: stats?.verified ?? "—", icon: Trophy, color: "#246356" },
+    { label: t("stat_active"), value: stats?.active_users ?? "—", icon: Phone, color: "#F5A623" },
+    { label: t("stat_rupees"), value: `₹${stats?.rupees_distributed ?? 0}`, icon: IndianRupee, color: "#0F172A" },
   ];
 
   return (
@@ -35,22 +39,22 @@ export default function Dashboard() {
       {/* Welcome */}
       <div className="civic-card p-6 sm:p-8 grid md:grid-cols-3 gap-6 items-center mb-8">
         <div className="md:col-span-2">
-          <span className="civic-chip bg-[#F5A623]" data-testid="welcome-chip">Namaste, {user?.name?.split(" ")[0]}</span>
-          <h1 className="heading text-3xl sm:text-4xl font-black mt-3">Your community needs you today.</h1>
-          <p className="text-slate-700 mt-2">You have {user?.points || 0} verified reports. Keep going — {25 - (user?.points || 0) % 25} more to your next ₹10.</p>
+          <span className="civic-chip bg-[#F5A623]" data-testid="welcome-chip">{t("dash_namaste")}, {user?.name?.split(" ")[0]}</span>
+          <h1 className="heading text-3xl sm:text-4xl font-black mt-3">{t("dash_h1")}</h1>
+          <p className="text-slate-700 mt-2">{t("dash_progress", { n: points, m: toNext })}</p>
           <div className="flex flex-wrap gap-3 mt-5">
             <Link to="/new-report" className="civic-btn" data-testid="cta-new-report">
-              <Plus className="w-5 h-5" strokeWidth={3}/> New report
+              <Plus className="w-5 h-5" strokeWidth={3}/> {t("dash_new_report")}
             </Link>
             <Link to="/ivr" className="civic-btn civic-btn-secondary" data-testid="cta-call">
-              <Phone className="w-5 h-5" strokeWidth={3}/> Call Nidhii line
+              <Phone className="w-5 h-5" strokeWidth={3}/> {t("dash_call")}
             </Link>
           </div>
         </div>
         <div className="bg-[#246356] text-white p-5 rounded-xl border-2 border-slate-900 shadow-[4px_4px_0_0_#0F172A]" data-testid="my-rank-card">
-          <div className="text-xs uppercase tracking-widest font-bold opacity-80">Your rank</div>
+          <div className="text-xs uppercase tracking-widest font-bold opacity-80">{t("your_rank")}</div>
           <div className="heading text-5xl font-black">{myRank >= 0 ? `#${myRank + 1}` : "—"}</div>
-          <div className="text-sm opacity-90 mt-1">in this week's leaderboard</div>
+          <div className="text-sm opacity-90 mt-1">{t("in_week_lb")}</div>
         </div>
       </div>
 
@@ -70,13 +74,13 @@ export default function Dashboard() {
         <div className="civic-card p-6 lg:col-span-2" data-testid="weekly-chart">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="heading text-2xl font-black">Weekly conservation</h2>
-              <p className="text-sm text-slate-600">Reports filed in the last 7 days</p>
+              <h2 className="heading text-2xl font-black">{t("weekly_h")}</h2>
+              <p className="text-sm text-slate-600">{t("weekly_p")}</p>
             </div>
             <div className="flex gap-3 text-xs font-bold">
-              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-[#246356] border border-slate-900"/>Water</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-[#F5A623] border border-slate-900"/>Energy</span>
-              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-[#E05A3D] border border-slate-900"/>Waste</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-[#246356] border border-slate-900"/>{t("type_water")}</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-[#F5A623] border border-slate-900"/>{t("type_energy")}</span>
+              <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-sm bg-[#E05A3D] border border-slate-900"/>{t("type_waste")}</span>
             </div>
           </div>
           <div className="h-64">
@@ -95,10 +99,10 @@ export default function Dashboard() {
         </div>
 
         <div className="civic-card p-6" data-testid="leaderboard-widget">
-          <h2 className="heading text-2xl font-black mb-1">Top 5</h2>
-          <p className="text-sm text-slate-600 mb-4">This week's guardians</p>
+          <h2 className="heading text-2xl font-black mb-1">{t("top5")}</h2>
+          <p className="text-sm text-slate-600 mb-4">{t("top5_sub")}</p>
           {leaders.length === 0 ? (
-            <p className="text-slate-500 text-sm">No reporters yet. Be the first!</p>
+            <p className="text-slate-500 text-sm">{t("no_reporters")}</p>
           ) : leaders.slice(0,5).map((u, i) => (
             <div key={u.id} className="flex items-center justify-between py-2 border-b border-slate-200 last:border-0" data-testid={`leader-${i}`}>
               <div className="flex items-center gap-3">
@@ -111,20 +115,20 @@ export default function Dashboard() {
               <div className="heading font-black">{u.points}</div>
             </div>
           ))}
-          <Link to="/leaderboard" className="text-xs font-black uppercase tracking-widest mt-3 inline-block underline" data-testid="see-all-leaders">See all →</Link>
+          <Link to="/leaderboard" className="text-xs font-black uppercase tracking-widest mt-3 inline-block underline" data-testid="see-all-leaders">{t("see_all")}</Link>
         </div>
       </div>
 
       {/* My recent reports */}
       <div className="civic-card p-6" data-testid="my-recent-reports">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="heading text-2xl font-black">My recent reports</h2>
-          <Link to="/reports" className="text-xs font-black uppercase tracking-widest underline">All reports →</Link>
+          <h2 className="heading text-2xl font-black">{t("my_recent")}</h2>
+          <Link to="/reports" className="text-xs font-black uppercase tracking-widest underline">{t("all_reports")}</Link>
         </div>
         {mine.length === 0 ? (
           <div className="text-center py-10 text-slate-500">
             <Plus className="w-10 h-10 mx-auto mb-3 text-slate-400" strokeWidth={2.5}/>
-            No reports yet. <Link to="/new-report" className="font-black underline">File your first one</Link>.
+            {t("no_reports_yet")} <Link to="/new-report" className="font-black underline">{t("file_first")}</Link>.
           </div>
         ) : (
           <div className="space-y-2">
